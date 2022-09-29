@@ -1,5 +1,10 @@
-﻿using DeviceManagement_WebApp.Data;
+﻿using Autofac.Core;
+using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
+using System.Linq;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -10,39 +15,66 @@ namespace DeviceManagement_WebApp.Repository
 
         }
 
-        public Device GetMostRecentDevice()
+        public IEnumerable GetMostRecentDevice()
         {
-            throw new System.NotImplementedException();
+            return _context.Device;
         }
 
-        void IDeviceRepository.AddDevice(Device device)
+        public IEnumerable GetCategory()
         {
-            throw new System.NotImplementedException();
+            return _context.Category;
+        }
+        public IEnumerable GetZone()
+        {
+            return _context.Zone;
+        }
+        public Device AddDevice(Device device)
+        {
+            _context.Device.Add(device);
+            int a = _context.SaveChanges();
+            return device;
+        }
+        public Device GetDevice(Guid Id)
+        {
+            return _context.Device.Find(Id);
+        }
+        public IEnumerable GetAllDevice()
+        {
+            return _context.Device;
         }
 
-        void IDeviceRepository.EditDevice(Device device)
+
+        public void DeleteDevice(Guid CustId)
         {
-            throw new System.NotImplementedException();
+            var cust = _context.Device.Find(CustId);
+            if (cust != null)
+            {
+                _context.Device.Remove(cust);
+            }
+            _context.SaveChanges();
+        }
+        public Device Delete(Guid CustId)
+        {
+            Device _cate = _context.Device.Find(CustId);
+            if (_cate != null)
+            {
+                _context.Device.Remove(_cate);
+                _context.SaveChanges();
+            }
+            return _cate;
         }
 
-        void IDeviceRepository.GetMostRecentGetById(int devi)
+        public Device FindDevice(Guid Id)
         {
-            throw new System.NotImplementedException();
+            return _context.Device.Find(Id);
         }
 
-        void IDeviceRepository.RemoveDevice(Device device)
+        public Device Update(Device _device)
         {
-            throw new System.NotImplementedException();
-        }
-
-        void IDeviceRepository.RemoveRangeDevice(Device device)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        void IDeviceRepository.ViewDevice(Device device)
-        {
-            throw new System.NotImplementedException();
+            var _categ = _context.Device.Attach(_device);
+            _categ.State = EntityState.Modified;
+            _context.SaveChanges();
+            return _device;
         }
     }
 }

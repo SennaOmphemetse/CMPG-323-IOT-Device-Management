@@ -1,5 +1,10 @@
-﻿using DeviceManagement_WebApp.Data;
+﻿using Autofac.Core;
+using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
+using System.Linq;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -9,40 +14,58 @@ namespace DeviceManagement_WebApp.Repository
         {
 
         }
-
-        public Zone GetMostRecentZone()
+        public IEnumerable GetMostRecentZone()
         {
-            throw new System.NotImplementedException();
+            return _context.Zone;
         }
 
-        void IZoneRepository.AddZone(Zone zone)
+        public Zone AddZone(Zone category)
         {
-            throw new System.NotImplementedException();
+            _context.Zone.Add(category);
+            int a = _context.SaveChanges();
+            return category;
+        }
+        public Zone GetZone(Guid Id)
+        {
+            return _context.Zone.Find(Id);
+        }
+        public IEnumerable GetAllZone()
+        {
+            return _context.Zone;
         }
 
-        void IZoneRepository.EditZone(Zone zone)
+
+        public void DeleteZone(Guid CustId)
         {
-            throw new System.NotImplementedException();
+            var cust = _context.Zone.Find(CustId);
+            if (cust != null)
+            {
+                _context.Zone.Remove(cust);
+            }
+            _context.SaveChanges();
+        }
+        public Zone Delete(Guid CustId)
+        {
+            Zone _cate = _context.Zone.Find(CustId);
+            if (_cate != null)
+            {
+                _context.Zone.Remove(_cate);
+                _context.SaveChanges();
+            }
+            return _cate;
         }
 
-        void IZoneRepository.GetMostRecentGetById(int zone)
+        public Zone FindZone(Guid Id)
         {
-            throw new System.NotImplementedException();
+            return _context.Zone.Find(Id);
         }
 
-        void IZoneRepository.RemoveRangeZone(Zone zone)
+        public Zone Update(Zone _category)
         {
-            throw new System.NotImplementedException();
-        }
-
-        void IZoneRepository.RemoveZone(Zone zone)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        void IZoneRepository.ViewZone(Zone zone)
-        {
-            throw new System.NotImplementedException();
+            var _categ = _context.Zone.Attach(_category);
+            _categ.State = EntityState.Modified;
+            _context.SaveChanges();
+            return _category;
         }
     }
 }

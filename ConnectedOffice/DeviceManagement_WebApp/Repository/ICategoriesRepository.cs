@@ -1,5 +1,7 @@
 ﻿using DeviceManagement_WebApp.Models;
 using System;
+using System.Collections;
+using System.Threading.Tasks;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -7,12 +9,12 @@ namespace DeviceManagement_WebApp.Repository
     {
 
         Category GetMostRecentCategory();
-        void GetMostRecentGetById(int categ);
-        
-        void RemoveCategory(Category category);
-        void AddCategory(Category category);
-        void RemoveRangeCategory(Category category);
-        void EditCategory(Category category);
-        void ViewCategory(Category category);
+        Category GetCategory(Guid Id);
+        Category AddCategory(Category category);
+        void DeleteCategory(Guid id);
+        Category Delete(Guid id);
+        Category FindCategory(Guid id);
+        Category Update(Category id);
+        Category Update2(Category id);
     }
 }

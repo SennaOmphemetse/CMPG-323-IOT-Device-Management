@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using DeviceManagement_WebApp.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ConnectedOfficeContext _context;
+        private readonly ICategoriesRepository _context;
 
-        public CategoriesController(ConnectedOfficeContext context)
+        public CategoriesController(ICategoriesRepository context)
         {
             _context = context;
         }
@@ -22,124 +24,120 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.ToListAsync());
+            return View(_context.GetAll());
         }
 
-        // GET: Categories/Details/5
-        public async Task<IActionResult> Details(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
+        
 
-            return View(category);
-        }
-
-        // GET: Categories/Create
-        public IActionResult Create()
+        [HttpGet]
+        public ViewResult Create()
         {
             return View();
         }
 
-        // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
+        public async Task<IActionResult> Create(Category model)
         {
-            category.CategoryId = Guid.NewGuid();
-            _context.Add(category);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Category.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
-        }
-
-        // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
-        {
-            if (id != category.CategoryId)
-            {
-                return NotFound();
-            }
             try
             {
-                _context.Update(category);
-                await _context.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    Category _category = new Category()
+                    {
+
+                        CategoryId = model.CategoryId,
+                        CategoryName = model.CategoryName,
+                        CategoryDescription = model.CategoryDescription,
+                        DateCreated = model.DateCreated,
+                        Device = model.Device
+
+                    };
+
+                    var datasave = _context.AddCategory(_category);
+                    _context.Update(_category);
+                }
+                return RedirectToAction("Index");
+                
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!CategoryExists(category.CategoryId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //ex.Message;
             }
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
-        // GET: Categories/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+
+        // GET: Categories/Details/5
+        [AllowAnonymous]
+        public ViewResult Details(Guid id)
         {
-            if (id == null)
+            Category model = _context.GetCategory(id);
+            if (model == null)
             {
-                return NotFound();
+                Response.StatusCode = 404;
+                return View("Customer Not Found", id);
             }
-
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
+            Category _detail = new Category()
             {
-                return NotFound();
-            }
+                CategoryName = model.CategoryName,
+                CategoryDescription = model.CategoryDescription,
+                DateCreated = model.DateCreated,
+                CategoryId = model.CategoryId,
+                Device = model.Device
 
-            return View(category);
+            };
+            return View(_detail);
         }
 
-        // POST: Categories/Delete/5
+        // GET: Devices/Edit/5
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            Category _cust = _context.GetCategory(id);
+
+            return View(_cust);
+        }
+
+        // POST: Devices/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid id, Category _category)
+        {
+            if (ModelState.IsValid)
+            {
+                Category _detail = _context.GetCategory(id);
+                _detail.CategoryName = _category.CategoryName;
+                _detail.CategoryDescription = _category.CategoryDescription;
+                _detail.DateCreated = _category.DateCreated;
+                _detail.CategoryId = _category.CategoryId;
+                _detail.Device = _category.Device;
+
+
+                _context.Update(_detail);
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+        // GET: Devices/Delete/5
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            Category _category = _context.GetCategory(id);
+            return View(_category);
+        }
+
+        // POST: Devices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Category _category)
         {
-            var category = await _context.Category.FindAsync(id);
-            _context.Category.Remove(category);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _context.DeleteCategory(_category.CategoryId);
+            return RedirectToAction("Index");
         }
 
-        private bool CategoryExists(Guid id)
-        {
-            return _context.Category.Any(e => e.CategoryId == id);
-        }
     }
 }

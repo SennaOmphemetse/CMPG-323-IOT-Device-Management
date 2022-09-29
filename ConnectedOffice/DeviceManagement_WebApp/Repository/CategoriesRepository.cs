@@ -1,7 +1,9 @@
 ﻿using Autofac.Core;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Linq;
 
 namespace DeviceManagement_WebApp.Repository
@@ -17,46 +19,61 @@ namespace DeviceManagement_WebApp.Repository
         {
             return _context.Category.OrderByDescending(category => category.DateCreated).FirstOrDefault();
         }
-        /**
-        public void CreateCategory(Category category)
+
+        public Category AddCategory(Category category)
         {
-            Add(category);
+            _context.Category.Add(category);
+            int a = _context.SaveChanges();
+            return category;
         }
-        **/
-        public void CreateCategory(Category category)
+        public Category GetCategory(Guid Id)
         {
-            Add(category);
+            return _context.Category.Find(Id);
+        }
+        public IEnumerable GetAllCategory()
+        {
+            return _context.Category;
         }
         
 
-        public void RemoveCategory(Category category)
+        public void DeleteCategory(Guid CustId)
         {
-            Remove(category);
+            var cust = _context.Category.Find(CustId);
+            if (cust != null)
+            {
+                _context.Category.Remove(cust);
+            }
+            _context.SaveChanges();
+        }
+        public Category Delete(Guid CustId)
+        {
+            Category _cate = _context.Category.Find(CustId);
+            if (_cate != null)
+            {
+                _context.Category.Remove(_cate);
+                _context.SaveChanges();
+            }
+            return _cate;
         }
 
-        void ICategoriesRepository.AddCategory(Category category)
+        public Category FindCategory(Guid Id)
         {
-            throw new NotImplementedException();
+            return _context.Category.Find(Id);
         }
 
-        void ICategoriesRepository.RemoveRangeCategory(Category category)
+        public Category Update(Category _category)
         {
-            throw new NotImplementedException();
+            var _categ = _context.Category.Attach(_category);
+            _categ.State = EntityState.Modified;
+            _context.SaveChanges();
+            return _category;
         }
-
-        void ICategoriesRepository.EditCategory(Category category)
+        public Category Update2(Category _category)
         {
-            throw new NotImplementedException();
-        }
-
-        void ICategoriesRepository.ViewCategory(Category category)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICategoriesRepository.GetMostRecentGetById(int categ)
-        {
-            throw new NotImplementedException();
+            var _categ = _context.Category.Attach(_category);
+            _categ.State = EntityState.Modified;
+            _context.SaveChanges();
+            return _category;
         }
     }
 }

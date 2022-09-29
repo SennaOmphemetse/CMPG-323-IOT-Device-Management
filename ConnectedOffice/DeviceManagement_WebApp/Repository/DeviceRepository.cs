@@ -14,5 +14,35 @@ namespace DeviceManagement_WebApp.Repository
         {
             throw new System.NotImplementedException();
         }
+
+        void IDeviceRepository.AddDevice(Device device)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IDeviceRepository.EditDevice(Device device)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IDeviceRepository.GetMostRecentGetById(int devi)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IDeviceRepository.RemoveDevice(Device device)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IDeviceRepository.RemoveRangeDevice(Device device)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IDeviceRepository.ViewDevice(Device device)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

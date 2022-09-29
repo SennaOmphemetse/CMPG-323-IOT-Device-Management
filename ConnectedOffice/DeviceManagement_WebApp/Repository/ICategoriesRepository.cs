@@ -7,9 +7,11 @@ namespace DeviceManagement_WebApp.Repository
     {
 
         Category GetMostRecentCategory();
+        void GetMostRecentGetById(int categ);
+        
         void RemoveCategory(Category category);
         void AddCategory(Category category);
-        void DeleteCategory(Category category);
+        void RemoveRangeCategory(Category category);
         void EditCategory(Category category);
         void ViewCategory(Category category);
     }

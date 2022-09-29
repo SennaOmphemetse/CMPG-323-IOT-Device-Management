@@ -39,7 +39,7 @@ namespace DeviceManagement_WebApp.Repository
             throw new NotImplementedException();
         }
 
-        void ICategoriesRepository.DeleteCategory(Category category)
+        void ICategoriesRepository.RemoveRangeCategory(Category category)
         {
             throw new NotImplementedException();
         }
@@ -50,6 +50,11 @@ namespace DeviceManagement_WebApp.Repository
         }
 
         void ICategoriesRepository.ViewCategory(Category category)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICategoriesRepository.GetMostRecentGetById(int categ)
         {
             throw new NotImplementedException();
         }

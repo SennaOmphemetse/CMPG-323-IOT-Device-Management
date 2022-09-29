@@ -14,5 +14,35 @@ namespace DeviceManagement_WebApp.Repository
         {
             throw new System.NotImplementedException();
         }
+
+        void IZoneRepository.AddZone(Zone zone)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IZoneRepository.EditZone(Zone zone)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IZoneRepository.GetMostRecentGetById(int zone)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IZoneRepository.RemoveRangeZone(Zone zone)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IZoneRepository.RemoveZone(Zone zone)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        void IZoneRepository.ViewZone(Zone zone)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
